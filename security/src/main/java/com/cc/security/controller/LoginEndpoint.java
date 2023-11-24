@@ -20,7 +20,7 @@ public class LoginEndpoint {
     @GetMapping
     String loginToObtainJwtToken(Authentication authentication){
         System.out.println("User Logged in, generating and sending back JWT");
-        return jwtGenerator.generate(authentication);
+        return jwtGenerator.generateJwtToken(authentication);
     }
 
 }

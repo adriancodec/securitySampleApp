@@ -13,13 +13,14 @@ public class User {
     private long id;
     private String username;
     private String password;
+    private String fullname;
     @ElementCollection(fetch = FetchType.EAGER)
     private Set<String> authorities;
 
-    public User(long id, String username, String password, Set<String> authorities) {
-        this.id = id;
+    public User(String username, String password, String fullname, Set<String> authorities, Set<String> roles) {
         this.username = username;
         this.password = password;
+        this.fullname = fullname;
         this.authorities = authorities;
     }
 
@@ -43,6 +44,14 @@ public class User {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
     }
 
     public void setPassword(String password) {
