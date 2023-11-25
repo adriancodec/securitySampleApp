@@ -31,6 +31,7 @@
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
+			<version>2.2.224</version>
 			<scope>runtime</scope>
 		</dependency>
 
@@ -60,6 +61,13 @@
 			<version>0.9.1</version>
 		</dependency>
 
+		<!-- SECURITY DatatypeConverter for parseClaimsJws in JwtFilter class DEPENDENCIES-->
+		<dependency>
+			<groupId>javax.xml.bind</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.3.1</version>
+		</dependency>
+
 		<!-- TEST DEPENDENCIES -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -71,11 +79,14 @@
 			<artifactId>spring-security-test</artifactId>
 			<scope>test</scope>
 		</dependency>
-		<!--<dependency>
-			<groupId>org.springframework.security</groupId>
-			<artifactId>spring-security-core</artifactId>
-			<version>6.1.5</version>
-		</dependency>-->
+
+		<!-- Resolving spring-boot-starter-web Vulnerabilities - remove this dependency to see the Warning-->
+		<dependency>
+			<groupId>org.yaml</groupId>
+			<artifactId>snakeyaml</artifactId>
+			<version>2.0</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

@@ -5,6 +5,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,6 +22,7 @@ public class ExecutionEndpoint {
     //@RolesAllowed("ROLE_ADMIN")               //NOT WORKING
     @GetMapping("admin")
     String adminExecution(Authentication authentication) {
+        System.out.println("ADMIN: Actual Anthentication:" + SecurityContextHolder.getContext().getAuthentication());
         System.out.println("ADMIN: Admin request arrived, starting execution");
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         System.out.println("ADMIN: Authorities of arrived user: " + authentication.getName() + " are: " + authorities);
@@ -34,6 +36,7 @@ public class ExecutionEndpoint {
     //@RolesAllowed("ROLE_USER")                //NOT WORKING
     @GetMapping("user")
     String userExecution(Authentication authentication) {
+        System.out.println("USER: Actual Anthentication:" + SecurityContextHolder.getContext().getAuthentication());
         System.out.println("USER: User request arrived, starting execution");
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         System.out.println("USER: Authorities of my authenticated user: " + authorities);

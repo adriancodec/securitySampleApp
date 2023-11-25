@@ -1,5 +1,6 @@
 package com.cc.security.security;
 
+import com.cc.security.logic.JwtFilter;
 import com.cc.security.logic.JwtGenerator;
 import com.cc.security.repository.UserRepository;
 import com.nimbusds.jose.jwk.JWK;
@@ -23,6 +24,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -35,20 +37,26 @@ import java.util.List;
 //@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true) //TODO important for method security to be enabled
 public class SecurityConfiguration {
 
+    private static final String PUBLIC_URL_MESSAGES = "/messages/public";
+    private static final String PUBLIC_URL_USERS = "/users";
+    private static final String PUBLIC_URL_LOGIN = "/login";
+
+    public static final List<String> PUBLIC_URLS = List.of(PUBLIC_URL_MESSAGES, PUBLIC_URL_USERS, PUBLIC_URL_LOGIN);
     // configuration
     @Bean
-    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, JwtGenerator jwtGenerator) throws Exception {
+    SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity, JwtGenerator jwtGenerator, RsaKeyProperties rsaKeyProperties) throws Exception {
         System.out.println("SECURITY: securityFilterChain executed");
         return httpSecurity
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/messages/public", "/users", "/login/**").permitAll()
+                        .requestMatchers(PUBLIC_URLS.toArray(new String[0])).permitAll()
                         .requestMatchers("/execution/admin").hasAuthority("ROLE_ADMIN")//ROLE_ADMIN is correct with Basic Auth //TODO one way to do it
                         .requestMatchers("/execution/user").hasAuthority("ROLE_USER")  //ROLE_USER is correct with Basic Auth //TODO one way to do it
                         .anyRequest().authenticated())
-                //.addFilterBefore(new JwtFilter(), UsernamePasswordAuthenticationFilter.class)//TODO this is the Filter which filters the requests
+
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwtConfigurer -> jwtConfigurer.jwtAuthenticationConverter(jwtAuthenticationConverter(jwtGenerator))))
+                //.addFilterBefore(new JwtFilter(rsaKeyProperties), UsernamePasswordAuthenticationFilter.class)//TODO this is the Filter which filters the requests
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .httpBasic(Customizer.withDefaults())
                 .build();
